@@ -4,15 +4,24 @@ FROM python:3.9-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Install system dependencies, including build tools
+# Install system dependencies, including build tools and font tools
 RUN apt-get update && apt-get install -y \
     build-essential \
     libcairo2-dev \
     pkg-config \
     fonts-noto-cjk \
     fonts-noto-cjk-extra \
+    wget \
+    unzip \
+    fontconfig \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
+
+# Download and install Pretendard font
+RUN wget https://github.com/orioncactus/pretendard/releases/download/v1.3.9/Pretendard-1.3.9.zip -O pretendard.zip && \
+    unzip pretendard.zip -d /usr/share/fonts/opentype/pretendard && \
+    rm pretendard.zip && \
+    fc-cache -fv
 
 # Copy the requirements file into the container
 COPY requirements.txt .
